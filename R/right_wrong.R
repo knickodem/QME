@@ -1,48 +1,27 @@
 #########################################
 # Function to produce a data frame of correct/incorrect
 #########################################
-
-right_wrong = function(test, key, id = TRUE, ...){
-
-	column_start = ifelse(id == TRUE, 2, 1)
-	id_col = test[, 1]
+right_wrong = function(test_with_id, key, na_to_0 = TRUE) {
   
-	# Coerce the item variables to characters
-	test[ , column_start:length(test)] = lapply(test[ , column_start:length(test)], as.character)
-	working_key = lapply(key, as.character)
+  score_column = function(itemcol, colname, key, na_to_0) {
+    ## Scores a single column
+    scores = key[match(itemcol, key$response), colname]
+    if(na_to_0) {
+      scores[is.na(scores)] = 0 #maybe put a warning here?
+    }
+    scores
+  }
   
-	# Convert NA's to blanks ("")
-	test[is.na(test)] = ""
+  test_no_id = test_with_id[,-1]
+  
+  scored_matrix = vapply(names(test_no_id), function(colname) {
+    score_column(test_no_id[[colname]], colname, key, na_to_0 = na_to_0)
+  }, FUN.VALUE = rep(0.0, nrow(test_no_id)))
+  
+  keyed_test = data.frame(id = test_with_id$id, scored_matrix, check.names = FALSE)
 
-	#Create an empty list
-	keyed_test = vector("list", nrow(test))
-
-	# Check if each item is correct or incorrect and store that in the appropriate list element
-	for(i in 1:nrow(test)){
-		keyed_test[[i]] = as.numeric(test[i , column_start:length(test)] == working_key)
-		}
-
-	# Bind the results into a data frame
-	keyed_test = as.data.frame(do.call(rbind, keyed_test))
-	
-	# Get the variable names
-	names(keyed_test) = names(test)[column_start:length(test)]
-	
-	# Bind the IDs and the 1/0s together
-	if(id == TRUE){
-		raw_test = test
-    names(raw_test)[1] = "id"   # change raw test first column to "id" for clarity
-    keyed_test = data.frame(id = id_col, keyed_test)
-    
-	}	
-		
-
-	test_data = list(
-		raw_test = raw_test,
-		key = key,
-		keyed_test = keyed_test
-		)
-
-	return(test_data)
-
+  if(all(names(keyed_test) != names(test_with_id)))
+    stop("Column names of keyed test do not equal names of original test")
+  
+  keyed_test
 }

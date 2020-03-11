@@ -33,7 +33,7 @@
 guttman_l2 = function(x, ...){
   
   # create covariance matrix of the data frame
-  cov_matrix = cov(x, use = "pairwise.complete.obs")
+  cov_matrix = cov(x, ...)
   
   tot_var = sum(cov_matrix)
   obs_var = sum(diag(cov_matrix))
@@ -53,7 +53,7 @@ guttman_l2 = function(x, ...){
 
   sem = sqrt(tot_var * (1 - l2))
 
-  return(list(l2 = l2, ll = lower_limit, ul = upper_limit, sem = sem))
+  return(c(l2 = l2, ll = lower_limit, ul = upper_limit, sem = sem))
 
 }
 

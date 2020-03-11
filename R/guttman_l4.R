@@ -5,10 +5,10 @@
 guttman_l4 = function(x, oddEven = TRUE, ...){
     
     # Compute covariance matrix for full test
-    cov_matrix = cov(x, use = "pairwise.complete.obs")
+    cov_matrix = cov(x, ...)
 
     #Split test
-    s = split_half(x, oddEven = TRUE)
+    s = split_half(x, oddEven = oddEven)
 
     # Compute variances for each form
     a_var = sum(var(s$form_a, na.rm = TRUE))
@@ -31,7 +31,7 @@ guttman_l4 = function(x, oddEven = TRUE, ...){
     # Compute standard error measurement
     sem = sqrt(tot_var * (1 - l4))
 
-    return(list(l4 = l4, ll = lower_limit, ul = upper_limit, sem = sem))
+    return(c(l4 = l4, ll = lower_limit, ul = upper_limit, sem = sem))
 }
 
 

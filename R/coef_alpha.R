@@ -19,7 +19,7 @@
 coef_alpha = function(x, ...){
   
   # create covariance matrix of the data frame
-  cov_matrix = cov(x, use = "pairwise.complete.obs")
+  cov_matrix = cov(x, ...)
   
 
   # collect the number of rows from the covariance matrix
@@ -42,7 +42,7 @@ coef_alpha = function(x, ...){
   tot_var = sum(cov_matrix)
   sem = sqrt(tot_var * (1 - alpha))
 
-  return(list(alpha = alpha, ll = lower_limit, ul = upper_limit, sem = sem))
+  return(c(alpha = alpha, ll = lower_limit, ul = upper_limit, sem = sem))
 }
 
 

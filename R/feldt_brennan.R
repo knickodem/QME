@@ -5,7 +5,7 @@
 feldt_brennan = function(x, ...){
   
 	# create covariance matrix of the data frame
-	cov_matrix = cov(x, use = "pairwise.complete.obs")
+	cov_matrix = cov(x, ...)
   
 	# Get the variance for the scores
 	tot_var = sum(cov_matrix)
@@ -31,7 +31,7 @@ feldt_brennan = function(x, ...){
 	# Compute standard error measurement
 	sem = sqrt(tot_var * (1 - fb))
 
-	return(list(fb = fb, ll = lower_limit, ul = upper_limit, sem = sem))
+	return(c(fb = fb, ll = lower_limit, ul = upper_limit, sem = sem))
 }
 
 # library(QME)
